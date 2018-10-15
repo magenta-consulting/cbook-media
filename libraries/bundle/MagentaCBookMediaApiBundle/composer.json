@@ -1,0 +1,44 @@
+{
+  "name": "magenta-consulting/cbook-media-api-bundle",
+  "type": "symfony-bundle",
+  "description": "Provides a Bundle Integration for the CBook Model.",
+  "keywords": [
+    "Symfony CBookApi Bundle"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Peter Bean",
+      "email": "peterbean@beancomponent.com"
+    }
+  ],
+  "require": {
+    "magenta-consulting/cbook-model-bundle": "^0.1",
+    "magenta-consulting/cbook-jwt-bundle": "^0.1",
+    "nelmio/api-doc-bundle": "^2.13",
+    "symfony/templating": "^4.1",
+    "friendsofsymfony/rest-bundle": "^2.3",
+    "symfony/twig-bundle": "^4.1",
+    "sensio/framework-extra-bundle": "^5.1"
+  },
+  "require-dev": {
+  },
+  "suggest": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Magenta\\Bundle\\CBookMediaApiBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Magenta\\Bundle\\CBookMediaApiBundle\\spec\\": "tests/spec/",
+      "Magenta\\Bundle\\CBookMediaApiBundle\\Tests\\": "tests/units/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1-dev"
+    }
+  }
+}
