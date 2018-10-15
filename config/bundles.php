@@ -16,7 +16,7 @@ return [
     Bean\Bundle\CreativeWorkBundle\BeanCreativeWorkBundle::class => ['all' => true],
     Bean\Bundle\ThingBundle\BeanThingBundle::class => ['all' => true],
     Bean\Bundle\OrganizationBundle\BeanOrganizationBundle::class => ['all' => true],
-    Bean\Bundle\DevToolBundle\BeanDevToolBundle::class => ['all' => true],
+    Bean\Bundle\DevToolBundle\BeanDevToolBundle::class => ['dev' => true, 'test' => true],
     Bean\Bundle\MediaBundle\BeanMediaBundle::class => ['all' => true, 'test' => true],
     Bean\Bundle\PersonBundle\BeanPersonBundle::class => ['all' => true, 'test' => true],
     Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle::class => ['all' => true],
