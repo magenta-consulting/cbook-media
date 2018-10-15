@@ -1,0 +1,17 @@
+bean_dev_tool:
+    library_source: D:\workspace\libraries\cbook\
+    library_workspace: D:\workspace\magenta\cbook\media\libraries\
+    components: ~
+    bundles:
+        - BeanDevToolBundle
+        - BeanSonataMediaBundle
+        - BeanBookBundle
+        - BeanCreativeWorkBundle
+        - BeanMediaBundle
+        - BeanPersonBundle
+        - BeanThingBundle
+        - BeanOrganizationBundle
+
+        - MagentaCBookModelBundle
+        - MagentaCBookMediaApiBundle
+        - MagentaCBookJWTBundle
