@@ -3,7 +3,6 @@ bean_dev_tool:
     library_workspace: D:\workspace\magenta\cbook\media\libraries\
     components: ~
     bundles:
-        - BeanDevToolBundle
         - BeanSonataMediaBundle
         - BeanBookBundle
         - BeanCreativeWorkBundle
