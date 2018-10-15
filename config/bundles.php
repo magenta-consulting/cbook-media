@@ -46,6 +46,8 @@ return [
     Sonata\AdminBundle\SonataAdminBundle::class => ['all' => true, 'test' => true],
     Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle::class => ['all' => true],
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
+    Sonata\CoreBundle\SonataCoreBundle::class => ['all' => true],
+    Sonata\BlockBundle\SonataBlockBundle::class => ['all' => true],
 
     Magenta\Bundle\CBookModelBundle\MagentaCBookModelBundle::class => ['all' => true, 'test' => true],
     Magenta\Bundle\CBookMediaApiBundle\MagentaCBookMediaApiBundle::class => ['all' => true, 'test' => true],
