@@ -1,3 +1,6 @@
+parameters:
+  nelmio_cors_allow_origin: '%env(CORS_ALLOW_ORIGIN)%'
+
 #jms_serializer:
 #    metadata:
 #        directories:
@@ -6,6 +9,17 @@
 #                path: "%kernel.root_dir%/serializer/FOSUB"
 
 nelmio_api_doc: ~
+
+nelmio_cors:
+  defaults:
+    origin_regex: true
+    allow_origin: ['*']
+    # allow_origin: ['%nelmio_cors_allow_origin%']
+    allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+    allow_headers: ['Content-Type', 'Authorization']
+    max_age: 3600
+  paths:
+    '^/': ~
 
 #twig:
 #    exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'

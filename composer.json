@@ -32,7 +32,8 @@
         "sonata-project/classification-bundle": "^3.7.1",
         "knplabs/doctrine-behaviors": "^1.5",
         "aws/aws-sdk-php": "^3.56",
-        "symfony/webpack-encore-pack": "^1.0"
+        "symfony/webpack-encore-pack": "^1.0",
+        "nelmio/cors-bundle": "^1.5"
     },
     "require-dev": {
         "beancomponent/devtool-bundle": "^0.1.2",
