@@ -2,17 +2,8 @@
     "beancomponent/devtool-bundle": {
         "version": "0.1.1"
     },
-    "composer/ca-bundle": {
-        "version": "1.1.2"
-    },
-    "composer/composer": {
-        "version": "1.7.2"
-    },
     "composer/semver": {
         "version": "1.4.2"
-    },
-    "composer/spdx-licenses": {
-        "version": "1.4.0"
     },
     "composer/xdebug-handler": {
         "version": "1.3.0"
@@ -25,9 +16,6 @@
             "version": "2.2",
             "ref": "81dee417d2cc60cd1c9d6208dff2ec22a1103e93"
         }
-    },
-    "justinrainbow/json-schema": {
-        "version": "5.2.7"
     },
     "myclabs/deep-copy": {
         "version": "1.8.1"
@@ -134,12 +122,6 @@
     "sebastian/version": {
         "version": "2.0.1"
     },
-    "seld/jsonlint": {
-        "version": "1.7.1"
-    },
-    "seld/phar-utils": {
-        "version": "1.0.1"
-    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -147,6 +129,24 @@
             "branch": "master",
             "version": "5.2",
             "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        }
+    },
+    "sonata-project/notification-bundle": {
+        "version": "3.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.4",
+            "ref": "222a1549f627f9faef39c0dd3cba1194a5175c00"
+        }
+    },
+    "sonata-project/notification-orm-pack": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "9b97b7756ccbe888d1be891b9dec6ec4c92ba0fe"
         }
     },
     "symfony/cache": {
@@ -244,5 +244,8 @@
     },
     "webmozart/assert": {
         "version": "1.3.0"
+    },
+    "zendframework/zenddiagnostics": {
+        "version": "v1.3.1"
     }
 }

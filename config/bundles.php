@@ -36,4 +36,5 @@ return [
     Magenta\Bundle\CBookMediaApiBundle\MagentaCBookMediaApiBundle::class => ['all' => true, 'test' => true],
     Magenta\Bundle\CBookJWTBundle\MagentaCBookJWTBundle::class => ['all' => true, 'test' => true],
     Nelmio\CorsBundle\NelmioCorsBundle::class => ['all' => true],
+    Sonata\NotificationBundle\SonataNotificationBundle::class => ['all' => true],
 ];
