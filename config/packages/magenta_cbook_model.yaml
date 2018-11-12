@@ -1,4 +1,6 @@
 parameters:
+  noreply_email: no-reply@magentapulse.com
+
   s3_version: latest
   s3_bucket_name: magenta-consulting
   s3_access_key: '%env(resolve:AWS_S3_ACCESS_KEY)%'
@@ -11,6 +13,8 @@ parameters:
   MEDIA_API_PREFIX_SLASH: '%env(MEDIA_API_PREFIX_SLASH)%'
   PDF_API_BASE_URL:  '%env(resolve:PDF_API_BASE_URL)%'
   PDF_DOWNLOAD_PREFIX: '%env(resolve:PDF_DOWNLOAD_PREFIX)%'
+  PWA_PUBLIC_KEY_PATH: '%kernel.project_dir%/%env(PWA_PUBLIC_KEY_PATH)%'
+  PWA_PRIVATE_KEY_PATH: '%kernel.project_dir%/%env(PWA_PRIVATE_KEY_PATH)%'
 
   WELLNESS_EVOUCHER_BASE_URL: '%env(resolve:WELLNESS_EVOUCHER_BASE_URL)%'
 
@@ -375,5 +379,34 @@ sonata_media:
   category_manager: sonata.classification.manager.category
 
   db_driver: doctrine_orm # could be doctrine_orm, doctrine_mongodb or doctrine_phpcr
+
+
+monolog:
+  handlers:
+    critical_error_logging:
+      type:         fingers_crossed
+      action_level: critical
+      handler:      grouped
+    grouped:
+      type:    group
+      members: [streamed, deduplicated]
+    streamed:
+      type:  stream
+      path:  '%kernel.logs_dir%/%kernel.environment%.log'
+      level: debug
+    deduplicated:
+      type: deduplication
+      # the time in seconds during which duplicate entries are discarded (default: 60)
+      time: 60
+      handler: swift
+    swift:
+      type:       swift_mailer
+      from_email: '%noreply_email%'
+      to_email:   'binh@sunrise.vn'
+      subject:    'CBook - An Error Occurred! %%message%%'
+      level:      debug
+      formatter:  monolog.formatter.html
+      content_type: text/html
+
 
 

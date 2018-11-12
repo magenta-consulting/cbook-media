@@ -8,6 +8,9 @@
     "composer/xdebug-handler": {
         "version": "1.3.0"
     },
+    "fgrosse/phpasn1": {
+        "version": "2.1.0"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
@@ -16,6 +19,9 @@
             "version": "2.2",
             "ref": "81dee417d2cc60cd1c9d6208dff2ec22a1103e93"
         }
+    },
+    "minishlink/web-push": {
+        "version": "v4.0.2"
     },
     "myclabs/deep-copy": {
         "version": "1.8.1"
@@ -28,6 +34,9 @@
             "version": "1.5",
             "ref": "f0436fc35fca88eada758311f8de43bfb61f1980"
         }
+    },
+    "paragonie/sodium_compat": {
+        "version": "v1.7.0"
     },
     "phar-io/manifest": {
         "version": "1.0.1"
@@ -149,6 +158,9 @@
             "ref": "9b97b7756ccbe888d1be891b9dec6ec4c92ba0fe"
         }
     },
+    "spomky-labs/base64url": {
+        "version": "v2.0.1"
+    },
     "symfony/cache": {
         "version": "v4.1.6"
     },
@@ -241,6 +253,33 @@
     },
     "theseer/tokenizer": {
         "version": "1.1.0"
+    },
+    "web-token/jwt-core": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-key-mgmt": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-signature": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-signature-algorithm-ecdsa": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-signature-algorithm-eddsa": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-signature-algorithm-hmac": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-signature-algorithm-none": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-signature-algorithm-rsa": {
+        "version": "v1.2.3"
+    },
+    "web-token/jwt-util-ecc": {
+        "version": "v1.2.3"
     },
     "webmozart/assert": {
         "version": "1.3.0"
