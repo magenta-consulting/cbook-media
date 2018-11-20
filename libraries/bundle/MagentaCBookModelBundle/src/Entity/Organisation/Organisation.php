@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Magenta\Bundle\CBookModelBundle\Entity\Book\Book;
 use Magenta\Bundle\CBookModelBundle\Entity\Classification\Category;
+use Magenta\Bundle\CBookModelBundle\Entity\Classification\Context;
 use Magenta\Bundle\CBookModelBundle\Entity\Media\Media;
 use Magenta\Bundle\CBookModelBundle\Entity\Person\Person;
 use Magenta\Bundle\CBookModelBundle\Entity\System\System;
@@ -21,7 +22,8 @@ use Magenta\Bundle\CBookModelBundle\Entity\User\User;
  */
 class Organisation extends OrganizationModel
 {
-
+    const PRE_CREATED_CONTEXT_ORG_LOGO = "organisation_logo";
+    
     /**
      * @var int|null
      * @ORM\Id
@@ -29,7 +31,7 @@ class Organisation extends OrganizationModel
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
+    
     function __construct()
     {
         parent::__construct();
@@ -39,8 +41,15 @@ class Organisation extends OrganizationModel
         $this->adminUsers = new ArrayCollection();
         $this->individualMembers = new ArrayCollection();
         $this->mediaAssets = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
-
+    
+    
+    public function getPublicConversation()
+    {
+        return $this->conversations->first();
+    }
+    
     /**
      * @param Person $person
      * @return IndividualMember|null
@@ -55,7 +64,7 @@ class Organisation extends OrganizationModel
         }
         return $f;
     }
-
+    
     /**
      * @return Collection
      */
@@ -69,7 +78,7 @@ class Organisation extends OrganizationModel
         ));
         return $this->books->matching($c);
     }
-
+    
     /**
      * @return Collection
      */
@@ -84,7 +93,7 @@ class Organisation extends OrganizationModel
         ));
         return $this->books->matching($c);
     }
-
+    
     /**
      * @ORM\ManyToMany(
      *     targetEntity="Magenta\Bundle\CBookModelBundle\Entity\User\User",
@@ -94,7 +103,7 @@ class Organisation extends OrganizationModel
      * @var Collection $adminUsers ;
      */
     protected $adminUsers;
-
+    
     public function addAdminUser(User $user)
     {
         $this->adminUsers->add($user);
@@ -102,19 +111,39 @@ class Organisation extends OrganizationModel
             $user->addAdminOrganisation($this);
         }
     }
-
+    
     public function removeAdminUser(User $user)
     {
         $this->adminUsers->removeElement($user);
         $user->removeAdminOrganisation($this);
     }
-
+    
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\System\AccessControl\ACRole", mappedBy="organisation", cascade={"persist","merge"}, orphanRemoval=true)
      */
     protected $roles;
-
+    
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Messaging\Conversation",
+     *     mappedBy="organisation", cascade={"persist"}, orphanRemoval=true
+     * )
+     *
+     * @var Collection $conversations;
+     */
+    protected $conversations;
+    
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Messaging\Message",
+     *     mappedBy="organisation", cascade={"persist"}, orphanRemoval=true
+     * )
+     *
+     * @var Collection $messages;
+     */
+    protected $messages;
+    
     /**
      * @ORM\OneToMany(
      *     targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Organisation\IndividualGroup",
@@ -125,19 +154,19 @@ class Organisation extends OrganizationModel
      * @var Collection $memberGroups ;
      */
     protected $memberGroups;
-
+    
     public function addMemberGroup(IndividualGroup $group)
     {
         $this->memberGroups->add($group);
         $group->setOrganization($this);
     }
-
+    
     public function removeMemberGroup(IndividualGroup $group)
     {
         $this->memberGroups->removeElement($group);
         $group->setOrganization(null);
     }
-
+    
     /**
      * @ORM\OneToMany(
      *     targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Classification\Category",
@@ -148,56 +177,67 @@ class Organisation extends OrganizationModel
      * @var Collection $categories ;
      */
     protected $categories;
-
+    
+    public function getRootCategoriesByContext(Context $context)
+    {
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+        $c->where($expr->andX(
+            $expr->eq('context', $context),
+            $expr->isNull('parent')
+        ));
+        return $this->categories->matching($c);
+    }
+    
     public function addCategory(Category $category)
     {
         $this->categories->add($category);
         $category->setOrganisation($this);
     }
-
+    
     public function removeCategory(Category $category)
     {
         $this->categories->removeElement($category);
         $category->setOrganisation(null);
     }
-
+    
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Book\Book", cascade={"persist","merge"}, orphanRemoval=true, mappedBy="organisation")
      */
     protected $books;
-
+    
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Organisation\IndividualMember", mappedBy="organization")
      */
     protected $individualMembers;
-
+    
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Media\Media", mappedBy="organisation")
      */
     protected $mediaAssets;
-
+    
     /**
      * @var System|null
      * @ORM\ManyToOne(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\System\System", inversedBy="organisations", cascade={"persist","merge"})
      * @ORM\JoinColumn(name="id_system", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $system;
-
+    
     /**
      * @var Media|null
      * @ORM\OneToOne(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Media\Media", mappedBy="logoOrganisation", cascade={"persist","merge"})
      */
     protected $logo;
-
+    
     /**
      * @var Media|null
      * @ORM\OneToOne(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Media\Media", mappedBy="appIconOrganisation", cascade={"persist","merge"})
      */
     protected $appIcon;
-
+    
     /**
      * @param Media|null $logo
      */
@@ -209,8 +249,8 @@ class Organisation extends OrganizationModel
             $logo->setOrganization($this);
         }
     }
-
-
+    
+    
     /**
      * @param Media|null $appIcon
      */
@@ -221,34 +261,34 @@ class Organisation extends OrganizationModel
             $appIcon->setAppIconOrganisation($this);
             $appIcon->setOrganization($this);
         }
-
+        
     }
-
+    
     /**
      * @var \DateTime|null
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $synchronisedAt;
-
+    
     /**
      * @var integer
      * @ORM\Column(type="integer", nullable=true)
      */
     protected $wellnessId;
-
+    
     /**
      * @var boolean|null
      * @ORM\Column(type="boolean",nullable=true)
      */
     protected $linkedToWellness;
-
+    
     /**
      * @var string|null
      * @ORM\Column(length=150, nullable=true)
      */
     protected
         $regNo;
-
+    
     /**
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
@@ -259,19 +299,19 @@ class Organisation extends OrganizationModel
      * @ORM\Column(type="string", nullable=true)
      */
     protected $wellnessEmployeeCode;
-
+    
     /**
      * @var string
      * @ORM\Column(type="string")
      */
     protected $code;
-
+    
     /**
      * @var string
      * @ORM\Column(type="string")
      */
     protected $slug;
-
+    
     /**
      * @return Media|null
      */
@@ -279,7 +319,7 @@ class Organisation extends OrganizationModel
     {
         return $this->logo;
     }
-
+    
     /**
      * @return Collection
      */
@@ -287,7 +327,7 @@ class Organisation extends OrganizationModel
     {
         return $this->books;
     }
-
+    
     /**
      * @param Collection $books
      */
@@ -295,7 +335,7 @@ class Organisation extends OrganizationModel
     {
         $this->books = $books;
     }
-
+    
     /**
      * @return string|null
      */
@@ -303,7 +343,7 @@ class Organisation extends OrganizationModel
     {
         return $this->code;
     }
-
+    
     /**
      * @param string|null $code
      */
@@ -311,7 +351,7 @@ class Organisation extends OrganizationModel
     {
         $this->code = $code;
     }
-
+    
     /**
      * @return Collection
      */
@@ -319,7 +359,7 @@ class Organisation extends OrganizationModel
     {
         return $this->individualMembers;
     }
-
+    
     /**
      * @param Collection $individualMembers
      */
@@ -327,7 +367,7 @@ class Organisation extends OrganizationModel
     {
         $this->individualMembers = $individualMembers;
     }
-
+    
     /**
      * @return Collection
      */
@@ -335,7 +375,7 @@ class Organisation extends OrganizationModel
     {
         return $this->adminUsers;
     }
-
+    
     /**
      * @param Collection $adminUsers
      */
@@ -343,7 +383,7 @@ class Organisation extends OrganizationModel
     {
         $this->adminUsers = $adminUsers;
     }
-
+    
     /**
      * @return Collection
      */
@@ -351,7 +391,7 @@ class Organisation extends OrganizationModel
     {
         return $this->roles;
     }
-
+    
     /**
      * @param Collection $roles
      */
@@ -359,7 +399,7 @@ class Organisation extends OrganizationModel
     {
         $this->roles = $roles;
     }
-
+    
     /**
      * @return string|null
      */
@@ -367,7 +407,7 @@ class Organisation extends OrganizationModel
     {
         return $this->slug;
     }
-
+    
     /**
      * @param string|null $slug
      */
@@ -375,7 +415,7 @@ class Organisation extends OrganizationModel
     {
         $this->slug = $slug;
     }
-
+    
     /**
      * @return bool|null
      */
@@ -383,7 +423,7 @@ class Organisation extends OrganizationModel
     {
         return $this->linkedToWellness;
     }
-
+    
     /**
      * @return bool
      */
@@ -391,7 +431,7 @@ class Organisation extends OrganizationModel
     {
         return !empty($this->linkedToWellness);
     }
-
+    
     /**
      * @param bool|null $linkedToWellness
      */
@@ -399,7 +439,7 @@ class Organisation extends OrganizationModel
     {
         $this->linkedToWellness = $linkedToWellness;
     }
-
+    
     /**
      * @return int
      */
@@ -407,7 +447,7 @@ class Organisation extends OrganizationModel
     {
         return $this->wellnessId;
     }
-
+    
     /**
      * @param int $wellnessId
      */
@@ -415,7 +455,7 @@ class Organisation extends OrganizationModel
     {
         $this->wellnessId = $wellnessId;
     }
-
+    
     /**
      * @return null|string
      */
@@ -423,7 +463,7 @@ class Organisation extends OrganizationModel
     {
         return $this->regNo;
     }
-
+    
     /**
      * @param null|string $regNo
      */
@@ -431,7 +471,7 @@ class Organisation extends OrganizationModel
     {
         $this->regNo = $regNo;
     }
-
+    
     /**
      * @return \DateTime|null
      */
@@ -439,7 +479,7 @@ class Organisation extends OrganizationModel
     {
         return $this->synchronisedAt;
     }
-
+    
     /**
      * @param \DateTime|null $synchronisedAt
      */
@@ -447,7 +487,7 @@ class Organisation extends OrganizationModel
     {
         $this->synchronisedAt = $synchronisedAt;
     }
-
+    
     /**
      * @return Media|null
      */
@@ -455,5 +495,52 @@ class Organisation extends OrganizationModel
     {
         return $this->appIcon;
     }
-
+    
+    /**
+     * @return Collection
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+    
+    /**
+     * @param Collection $categories
+     */
+    public function setCategories(Collection $categories): void
+    {
+        $this->categories = $categories;
+    }
+    
+    /**
+     * @return Collection
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+    
+    /**
+     * @param Collection $conversations
+     */
+    public function setConversations(Collection $conversations): void
+    {
+        $this->conversations = $conversations;
+    }
+    
+    /**
+     * @return Collection
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+    
+    /**
+     * @param Collection $messages
+     */
+    public function setMessages(Collection $messages): void
+    {
+        $this->messages = $messages;
+    }
 }

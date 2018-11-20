@@ -13,12 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class DPJob
 {
     const TYPE_MEMBER_IMPORT = 'MEMBER_IMPORT';
-
+    const TYPE_PWA_PUSH_ORG_INDIVIDUAL = 'PWA_PUSH_ORG_INDIVIDUAL';
+    
     const STATUS_PENDING = 'PENDING';
     const STATUS_LOCKED = 'LOCKED';
     const STATUS_SUCCESSFUL = 'SUCCESSFUL';
     const STATUS_FAILED = 'FAILED';
-
+    
     /**
      * @var int|null
      * @ORM\Id
@@ -26,28 +27,31 @@ class DPJob
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
+    
     public function __construct()
     {
         $this->logs = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
-
+    
     /**
+     * @param $resourceName: MEMBER_IMPORT => fileName, PWA_PUSH_ORG_INDIVIDUAL => messageId
+     * @param $type
+     * @param null $ownerId
      * @return DPJob
      */
     public static function newInstance($resourceName, $type, $ownerId = null)
     {
         $obj = new DPJob();
         $obj->setResourceName($resourceName);
-        if (!in_array($type, [self::TYPE_MEMBER_IMPORT])) {
+        if (!in_array($type, [self::TYPE_MEMBER_IMPORT, self::TYPE_PWA_PUSH_ORG_INDIVIDUAL])) {
             throw new \InvalidArgumentException();
         }
         $obj->setType($type);
         $obj->setOwnerId($ownerId);
         return $obj;
     }
-
+    
     /**
      * @return string
      */
@@ -55,67 +59,73 @@ class DPJob
     {
         return $this->id;
     }
-
+    
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\System\DataProcessing\DPLog", mappedBy="job")
      */
     protected $logs;
-
+    
     public function addLog(DPLog $log)
     {
         $this->logs->add($log);
         $log->setJob($this);
     }
-
+    
     public function removeLog(DPLog $log)
     {
         $this->logs->removeElement($log);
         $log->setJob(null);
     }
-
+    
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
      */
     protected $createdAt;
-
+    
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $startedAt;
-
+    
     /**
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
      */
     protected $resourceName;
-
+    
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $resourceData;
+    
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
      */
     protected $type;
-
+    
     /**
      * @var integer
      * @ORM\Column(type="integer", name="job_index", options={"default":0})
      */
     protected $index = 0;
-
+    
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
      */
     protected $status = self::STATUS_PENDING;
-
+    
     /**
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
      */
     protected $ownerId;
-
+    
     /**
      * @return string
      */
@@ -123,7 +133,7 @@ class DPJob
     {
         return $this->type;
     }
-
+    
     /**
      * @param string $type
      */
@@ -131,7 +141,7 @@ class DPJob
     {
         $this->type = $type;
     }
-
+    
     /**
      * @return null|string
      */
@@ -139,7 +149,7 @@ class DPJob
     {
         return $this->ownerId;
     }
-
+    
     /**
      * @param null|string $ownerId
      */
@@ -147,7 +157,7 @@ class DPJob
     {
         $this->ownerId = $ownerId;
     }
-
+    
     /**
      * @return int
      */
@@ -155,7 +165,7 @@ class DPJob
     {
         return $this->index;
     }
-
+    
     /**
      * @param int $index
      */
@@ -163,7 +173,7 @@ class DPJob
     {
         $this->index = $index;
     }
-
+    
     /**
      * @return string
      */
@@ -171,7 +181,7 @@ class DPJob
     {
         return $this->status;
     }
-
+    
     /**
      * @param string $status
      */
@@ -179,7 +189,7 @@ class DPJob
     {
         $this->status = $status;
     }
-
+    
     /**
      * @return null|string
      */
@@ -187,7 +197,7 @@ class DPJob
     {
         return $this->resourceName;
     }
-
+    
     /**
      * @param null|string $resourceName
      */
@@ -195,7 +205,7 @@ class DPJob
     {
         $this->resourceName = $resourceName;
     }
-
+    
     /**
      * @return Collection
      */
@@ -203,7 +213,7 @@ class DPJob
     {
         return $this->logs;
     }
-
+    
     /**
      * @param Collection $logs
      */
@@ -211,7 +221,7 @@ class DPJob
     {
         $this->logs = $logs;
     }
-
+    
     /**
      * @return \DateTime
      */
@@ -219,7 +229,7 @@ class DPJob
     {
         return $this->createdAt;
     }
-
+    
     /**
      * @param \DateTime $createdAt
      */
@@ -227,7 +237,7 @@ class DPJob
     {
         $this->createdAt = $createdAt;
     }
-
+    
     /**
      * @return \DateTime
      */
@@ -235,7 +245,7 @@ class DPJob
     {
         return $this->startedAt;
     }
-
+    
     /**
      * @param \DateTime $startedAt
      */
@@ -243,4 +253,22 @@ class DPJob
     {
         $this->startedAt = $startedAt;
     }
+    
+    /**
+     * @return null|string
+     */
+    public function getResourceData(): ?string
+    {
+        return $this->resourceData;
+    }
+    
+    /**
+     * @param null|string $resourceData
+     */
+    public function setResourceData(?string $resourceData): void
+    {
+        $this->resourceData = $resourceData;
+    }
+    
+    
 }

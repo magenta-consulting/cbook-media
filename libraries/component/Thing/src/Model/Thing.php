@@ -9,14 +9,14 @@ namespace Bean\Component\Thing\Model;
  */
 abstract class Thing implements ThingInterface
 {
-
+    
     protected $id;
-
+    
     function __construct()
     {
         $this->createdAt = new \DateTime();
     }
-
+    
     public function __clone()
     {
         if ($this->id) {
@@ -37,7 +37,7 @@ abstract class Thing implements ThingInterface
             }
         }
     }
-
+    
     public function copyScalarPropertiesFrom(ThingInterface $thing)
     {
         $vars = get_object_vars($this);
@@ -56,27 +56,18 @@ abstract class Thing implements ThingInterface
                 }
             }
         }
-//		$m_person->setEmail($email);
-//		$m_person->setFamilyName($person->getFamilyName());
-//		$m_person->setGivenName($person->getGivenName());
-//		$m_person->setName($person->getName());
-//		$m_person->setEnabled(true);
-//		$m_person->setHomeAddress($person->getHomeAddress());
-//		$m_person->setTelephone($person->getTelephone());
-//		$m_person->setBirthDate($person->getBirthDate());
-//		$m_person->setDescription($person->getDescription());
     }
-
+    
     protected function getObjectArrayProperties()
     {
         return [];
     }
-
+    
     protected function getObjectProperties()
     {
         return [];
     }
-
+    
     /**
      * NOT part of schema.org
      *
@@ -88,11 +79,11 @@ abstract class Thing implements ThingInterface
     protected function addElementToArrayProperty($element, $prop)
     {
         $this->{$prop}[] = $element;
-
+        
         return true;
-
+        
     }
-
+    
     /**
      * NOT part of schema.org
      *
@@ -108,52 +99,58 @@ abstract class Thing implements ThingInterface
             return false;
         }
         unset($this->{$prop}[$key]);
-
+        
         return true;
     }
-
+    
     /**
      * NOT part of schema.org
      * @var boolean
      */
     protected $enabled = false;
-
+    
+    /**
+     * NOT part of schema.org
+     * @var boolean|null
+     */
+    protected $locked = false;
+    
     /**
      * NOT part of schema.org
      * @var \DateTime
      */
     protected $createdAt;
-
+    
     /**
      * NOT part of schema.org
      * @var \DateTime|null
      */
     protected $updatedAt;
-
+    
     /**
      * NOT part of schema.org
      * A thing may have a status like DRAFT, OPEN, CLOSED, EXPIRED, ARCHIVED
      * @var string|null
      */
     protected $status;
-
+    
     /**
      * The name of the item.
      * @var string|null
      */
     protected $name;
-
+    
     /**
      * A description of the item.
      * @var string|null
      */
     protected $description;
-
+    
     public function getId()
     {
         return $this->id;
     }
-
+    
     /**
      * @return bool
      */
@@ -161,7 +158,7 @@ abstract class Thing implements ThingInterface
     {
         return $this->enabled;
     }
-
+    
     /**
      * @param bool $enabled
      */
@@ -169,7 +166,7 @@ abstract class Thing implements ThingInterface
     {
         $this->enabled = $enabled;
     }
-
+    
     /**
      * @return \DateTime
      */
@@ -177,7 +174,7 @@ abstract class Thing implements ThingInterface
     {
         return $this->createdAt;
     }
-
+    
     /**
      * @param \DateTime $createdAt
      */
@@ -185,7 +182,7 @@ abstract class Thing implements ThingInterface
     {
         $this->createdAt = $createdAt;
     }
-
+    
     /**
      * @return \DateTime
      */
@@ -193,7 +190,7 @@ abstract class Thing implements ThingInterface
     {
         return $this->updatedAt;
     }
-
+    
     /**
      * @param \DateTime $updatedAt
      */
@@ -201,7 +198,7 @@ abstract class Thing implements ThingInterface
     {
         $this->updatedAt = $updatedAt;
     }
-
+    
     /**
      * @return null|string
      */
@@ -209,8 +206,8 @@ abstract class Thing implements ThingInterface
     {
         return $this->name;
     }
-
-
+    
+    
     /**
      * @param null|string $name
      */
@@ -218,7 +215,7 @@ abstract class Thing implements ThingInterface
     {
         $this->name = $name;
     }
-
+    
     /**
      * @return null|string
      */
@@ -226,7 +223,7 @@ abstract class Thing implements ThingInterface
     {
         return $this->description;
     }
-
+    
     /**
      * @param null|string $description
      */
@@ -234,7 +231,7 @@ abstract class Thing implements ThingInterface
     {
         $this->description = $description;
     }
-
+    
     /**
      * @return null|string
      */
@@ -242,7 +239,7 @@ abstract class Thing implements ThingInterface
     {
         return $this->status;
     }
-
+    
     /**
      * @param null|string $status
      */
@@ -250,5 +247,29 @@ abstract class Thing implements ThingInterface
     {
         $this->status = $status;
     }
-
+    
+    /**
+     * @return bool|null
+     */
+    public function isLocked(): bool
+    {
+        return !empty($this->locked);
+    }
+    
+    /**
+     * @return bool|null
+     */
+    public function getLocked(): ?bool
+    {
+        return $this->locked;
+    }
+    
+    /**
+     * @param bool|null $locked
+     */
+    public function setLocked(?bool $locked): void
+    {
+        $this->locked = $locked;
+    }
+    
 }

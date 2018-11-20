@@ -2,15 +2,18 @@
 
 namespace Magenta\Bundle\CBookModelBundle\Entity\Organisation;
 
+use Bean\Component\Messaging\IoC\MessageDeliverableInterface;
 use Bean\Component\Organization\Model\IndividualMember as MemberModel;
 
 use Bean\Component\Organization\Model\OrganizationInterface;
 use Bean\Component\Person\Model\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Magenta\Bundle\CBookModelBundle\Entity\Book\Book;
 use Magenta\Bundle\CBookModelBundle\Entity\Media\Media;
+use Magenta\Bundle\CBookModelBundle\Entity\Messaging\Message;
 use Magenta\Bundle\CBookModelBundle\Entity\System\AccessControl\ACRole;
 use Magenta\Bundle\CBookModelBundle\Entity\User\User;
 
@@ -18,7 +21,7 @@ use Magenta\Bundle\CBookModelBundle\Entity\User\User;
  * @ORM\Entity(repositoryClass="Magenta\Bundle\CBookModelBundle\Repository\Organisation\IndividualMemberRepository")
  * @ORM\Table(name="organisation__individual_member")
  */
-class IndividualMember extends MemberModel
+class IndividualMember extends MemberModel implements MessageDeliverableInterface
 {
 
     /**
@@ -34,6 +37,8 @@ class IndividualMember extends MemberModel
         parent::__construct();
         $this->groupIndividuals = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->messageDeliveries = new ArrayCollection();
         $this->enabled = true;
     }
 
@@ -51,6 +56,16 @@ class IndividualMember extends MemberModel
         $member->setPerson($person);
         $member->setEmail($email);
         return $member;
+    }
+
+    public function isMessageDelivered(Message $message)
+    {
+        $c = Criteria::create();
+        $expr = Criteria::expr();
+
+        $c->where($expr->eq('message', $message));
+
+        return $this->messageDeliveries->matching($c)->count() > 0;
     }
 
     public function getBooksToRead()
@@ -101,6 +116,18 @@ class IndividualMember extends MemberModel
     {
         $this->groups->removeElement($gc);
     }
+
+    /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\System\ProgressiveWebApp\Subscription", mappedBy="individualMember")
+     */
+    protected $subscriptions;
+
+    /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Messaging\MessageDelivery", mappedBy="recipient")
+     */
+    protected $messageDeliveries;
 
     /**
      * @var Collection
@@ -372,5 +399,37 @@ class IndividualMember extends MemberModel
     public function setWellnessEmployeeCode(?string $wellnessEmployeeCode): void
     {
         $this->wellnessEmployeeCode = $wellnessEmployeeCode;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    /**
+     * @param Collection $subscriptions
+     */
+    public function setSubscriptions(Collection $subscriptions): void
+    {
+        $this->subscriptions = $subscriptions;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMessageDeliveries(): Collection
+    {
+        return $this->messageDeliveries;
+    }
+
+    /**
+     * @param Collection $messageDeliveries
+     */
+    public function setMessageDeliveries(Collection $messageDeliveries): void
+    {
+        $this->messageDeliveries = $messageDeliveries;
     }
 }
