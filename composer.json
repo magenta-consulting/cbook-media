@@ -110,6 +110,7 @@
                 "libraries\\component\\IndividualMemberGroup\\tests/spec/",
                 "libraries\\component\\Organization\\tests/spec/"
             ],
+            "Bean\\Component\\Messaging\\": "libraries\\component\\Messaging\\src/",
             "Bean\\Component\\Media\\spec\\": "libraries\\component\\Media\\tests/spec/",
             "Bean\\Component\\Page\\spec\\": "libraries\\component\\Page\\tests/spec/",
             "Bean\\Component\\Person\\spec\\": "libraries\\component\\Person\\tests/spec/",
