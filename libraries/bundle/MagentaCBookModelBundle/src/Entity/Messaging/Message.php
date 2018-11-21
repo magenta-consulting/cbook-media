@@ -7,11 +7,13 @@ use Bean\Component\Organization\Model\IndividualMember as MemberModel;
 
 use Bean\Component\Organization\Model\OrganizationInterface;
 use Bean\Component\Thing\Model\Thing;
+use Bean\Component\Thing\Model\ThingInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Magenta\Bundle\CBookModelBundle\Entity\AccessControl\ACRole;
 use Magenta\Bundle\CBookModelBundle\Entity\Media\Media;
+use Magenta\Bundle\CBookModelBundle\Entity\Organisation\IndividualMember;
 use Magenta\Bundle\CBookModelBundle\Entity\Organisation\Organisation;
 use Magenta\Bundle\CBookModelBundle\Entity\Person\Person;
 
@@ -25,6 +27,7 @@ class Message extends \Bean\Component\Messaging\Model\Message implements Organiz
     public function __construct()
     {
         parent::__construct();
+        $this->deliveries = new ArrayCollection();
     }
     
     public function markStatusAsDeliveryInProgress()
@@ -32,6 +35,14 @@ class Message extends \Bean\Component\Messaging\Model\Message implements Organiz
         if ($this->status === self::STATUS_NEW) {
             $this->status = self::STATUS_DELIVERY_IN_PROGRESS;
         }
+    }
+    
+    /**
+     * @return IndividualMember|null
+     */
+    public function getSender(): ?ThingInterface
+    {
+        return parent::getSender();
     }
     
     /**
@@ -47,6 +58,19 @@ class Message extends \Bean\Component\Messaging\Model\Message implements Organiz
      * @ORM\JoinColumn(name="id_conversation", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $conversation;
+    
+    /**
+     * @var IndividualMember|null
+     * @ORM\ManyToOne(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Organisation\IndividualMember", inversedBy="messages")
+     * @ORM\JoinColumn(name="id_sender", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $sender;
+    
+    /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\Messaging\MessageDelivery", mappedBy="message")
+     */
+    protected $deliveries;
     
     public function getOrganization(): ?OrganizationInterface
     {
