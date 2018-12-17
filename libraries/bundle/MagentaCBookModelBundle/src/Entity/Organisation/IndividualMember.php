@@ -185,6 +185,11 @@ class IndividualMember extends MemberModel implements MessageDeliverableInterfac
         $this->groups->removeElement($gc);
     }
     
+    public function isMemberOfGroup(IndividualGroup $group)
+    {
+        return $this->groups->contains($group);
+    }
+    
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="Magenta\Bundle\CBookModelBundle\Entity\System\ProgressiveWebApp\Subscription", mappedBy="individualMember")
@@ -259,6 +264,18 @@ class IndividualMember extends MemberModel implements MessageDeliverableInterfac
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
      */
+    protected $department;
+    
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $designation;
+    
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", nullable=true)
+     */
     protected $wellnessPin;
     
     
@@ -272,7 +289,7 @@ class IndividualMember extends MemberModel implements MessageDeliverableInterfac
      * @var boolean
      * @ORM\Column(type="boolean", options={"default":true})
      */
-    protected $contactable = true;
+    protected $contactable = false;
     
     /**
      * @var string|null
@@ -522,5 +539,37 @@ class IndividualMember extends MemberModel implements MessageDeliverableInterfac
     public function setMessages(Collection $messages): void
     {
         $this->messages = $messages;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getDepartment(): ?string
+    {
+        return $this->department;
+    }
+    
+    /**
+     * @param null|string $department
+     */
+    public function setDepartment(?string $department): void
+    {
+        $this->department = $department;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getDesignation(): ?string
+    {
+        return $this->designation;
+    }
+    
+    /**
+     * @param null|string $designation
+     */
+    public function setDesignation(?string $designation): void
+    {
+        $this->designation = $designation;
     }
 }
